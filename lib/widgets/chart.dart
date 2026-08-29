@@ -65,11 +65,12 @@ class _ChartState extends ConsumerState<Chart> {
 
 // Setting variables for different charts
       if (isGeneralNum) {
+        List<double> generalRegionsKoef = ref.watch(generalRegions);
         numbersOriginal = dataList[0].generalNumQuantity!;
         historyNums = historyGeneral;
         max = dataList[0].maxGeneral().toDouble();
         min = dataList[0].minGeneral().toDouble();
-        extraLines = dataList[0].simpleRegionsGeneral();
+        extraLines = dataList[0].simpleRegionsGeneral(generalRegionsKoef);
         barWidth = AppDimens.barWidthGenerar;
         fontSize = AppDimens.myNumFontSize;
 
@@ -83,11 +84,12 @@ class _ChartState extends ConsumerState<Chart> {
         yOffset = 7;
         koefBar = 1;
       } else {
+        List<double> additionalRegionsKoef = ref.watch(additionalRegions);
         numbersOriginal = dataList[0].additionalNumQuantity!;
         historyNums = historyAdditional;
         max = dataList[0].maxAdditional().toDouble();
         min = dataList[0].minAdditional().toDouble();
-        extraLines = dataList[0].simpleRegionsAdditional();
+        extraLines = dataList[0].simpleRegionsAdditional(additionalRegionsKoef);
         barWidth = AppDimens.barWidthAdditional;
         fontSize = 15;
         barPadding = isLandscape

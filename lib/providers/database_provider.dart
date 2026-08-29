@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:eurojackpot/models/history_numbers.dart';
@@ -288,3 +289,222 @@ final wideColumnsNamesProvider = StateProvider((ref) {
 final wideDataProvider = StateNotifierProvider(
   (ref) => WideDataNotifier(ref),
 );
+
+class UserPlayedNumbersNotifier extends StateNotifier<List<List<int>>> {
+  UserPlayedNumbersNotifier(this.ref)
+      : super([
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+        ]);
+  final Ref ref;
+
+  Future<List<List<int>>> loadNumbers() async {
+    final db = await _getDatabase();
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS user_played_numbers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        row_index INTEGER,
+        num_1 INTEGER,
+        num_2 INTEGER,
+        num_3 INTEGER,
+        num_4 INTEGER,
+        num_5 INTEGER,
+        num_6 INTEGER,
+        num_7 INTEGER
+      )
+    ''');
+
+    final dataDB = await db.rawQuery(
+        'SELECT * FROM user_played_numbers ORDER BY row_index ASC');
+    if (dataDB.isEmpty) {
+      List<List<int>> defaultRows = [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+      ];
+      state = defaultRows;
+      return defaultRows;
+    }
+
+    List<List<int>> loaded = [];
+    for (var row in dataDB) {
+      loaded.add([
+        (row['num_1'] as int?) ?? 0,
+        (row['num_2'] as int?) ?? 0,
+        (row['num_3'] as int?) ?? 0,
+        (row['num_4'] as int?) ?? 0,
+        (row['num_5'] as int?) ?? 0,
+        (row['num_6'] as int?) ?? 0,
+        (row['num_7'] as int?) ?? 0,
+      ]);
+    }
+
+    while (loaded.length < 3) {
+      loaded.add([0, 0, 0, 0, 0, 0, 0]);
+    }
+    if (loaded.length > 5) {
+      loaded = loaded.sublist(0, 5);
+    }
+
+    state = loaded;
+    return loaded;
+  }
+
+  Future<void> saveNumbers(List<List<int>> rows) async {
+    final db = await _getDatabase();
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS user_played_numbers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        row_index INTEGER,
+        num_1 INTEGER,
+        num_2 INTEGER,
+        num_3 INTEGER,
+        num_4 INTEGER,
+        num_5 INTEGER,
+        num_6 INTEGER,
+        num_7 INTEGER
+      )
+    ''');
+
+    await db.transaction((txn) async {
+      await txn.rawDelete('DELETE FROM user_played_numbers');
+      for (int i = 0; i < rows.length; i++) {
+        final r = rows[i];
+        await txn.rawInsert(
+          'INSERT INTO user_played_numbers (row_index, num_1, num_2, num_3, num_4, num_5, num_6, num_7) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [i, r[0], r[1], r[2], r[3], r[4], r[5], r[6]],
+        );
+      }
+    });
+    state = List<List<int>>.from(rows.map((row) => List<int>.from(row)));
+  }
+
+  void updateRow(int index, List<int> newRow) {
+    if (index >= 0 && index < state.length) {
+      final updated = List<List<int>>.from(state.map((r) => List<int>.from(r)));
+      updated[index] = List<int>.from(newRow);
+      state = updated;
+    }
+  }
+
+  void addRow() {
+    if (state.length < 5) {
+      state = [...state, [0, 0, 0, 0, 0, 0, 0]];
+    }
+  }
+
+  void removeRow(int index) {
+    if (state.length > 3 && index >= 0 && index < state.length) {
+      final updated = List<List<int>>.from(state.map((r) => List<int>.from(r)));
+      updated.removeAt(index);
+      state = updated;
+    }
+  }
+}
+
+final userPlayedNumbersProvider =
+    StateNotifierProvider<UserPlayedNumbersNotifier, List<List<int>>>(
+  (ref) => UserPlayedNumbersNotifier(ref),
+);
+
+Future<void> saveAppSetting(String key, String value) async {
+  final db = await _getDatabase();
+  await db.execute('''
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )
+  ''');
+  await db.rawInsert(
+    'INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, ?)',
+    [key, value],
+  );
+}
+
+Future<String?> getAppSetting(String key) async {
+  final db = await _getDatabase();
+  await db.execute('''
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )
+  ''');
+  final result = await db.query(
+    'app_settings',
+    where: 'key = ?',
+    whereArgs: [key],
+    limit: 1,
+  );
+  if (result.isNotEmpty) {
+    return result.first['value'] as String?;
+  }
+  return null;
+}
+
+Future<void> loadAllSettings(dynamic ref) async {
+  final db = await _getDatabase();
+  await db.execute('''
+    CREATE TABLE IF NOT EXISTS app_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT
+    )
+  ''');
+  final result = await db.query('app_settings');
+  final map = {for (var r in result) r['key'] as String: r['value'] as String};
+
+  if (map.containsKey('generalRegions')) {
+    try {
+      List<dynamic> list = jsonDecode(map['generalRegions']!);
+      ref.read(generalRegions.notifier).state =
+          list.map((e) => (e as num).toDouble()).toList();
+    } catch (_) {}
+  } else if (map.containsKey('regions')) {
+    try {
+      List<dynamic> list = jsonDecode(map['regions']!);
+      ref.read(generalRegions.notifier).state =
+          list.map((e) => (e as num).toDouble()).toList();
+    } catch (_) {}
+  }
+  if (map.containsKey('additionalRegions')) {
+    try {
+      List<dynamic> list = jsonDecode(map['additionalRegions']!);
+      ref.read(additionalRegions.notifier).state =
+          list.map((e) => (e as num).toDouble()).toList();
+    } catch (_) {}
+  } else if (map.containsKey('regions')) {
+    try {
+      List<dynamic> list = jsonDecode(map['regions']!);
+      ref.read(additionalRegions.notifier).state =
+          list.map((e) => (e as num).toDouble()).toList();
+    } catch (_) {}
+  }
+  if (map.containsKey('generalRegionQuantity')) {
+    try {
+      List<dynamic> list = jsonDecode(map['generalRegionQuantity']!);
+      ref.read(generalRegionQuantity.notifier).state =
+          list.map((e) => (e as num).toInt()).toList();
+    } catch (_) {}
+  }
+  if (map.containsKey('additionalRegionQuantity')) {
+    try {
+      List<dynamic> list = jsonDecode(map['additionalRegionQuantity']!);
+      ref.read(additionalRegionQuantity.notifier).state =
+          list.map((e) => (e as num).toInt()).toList();
+    } catch (_) {}
+  }
+  if (map.containsKey('allowRepeatNumbers')) {
+    ref.read(allowRepeatNumbers.notifier).state =
+        map['allowRepeatNumbers'] == 'true';
+  }
+  if (map.containsKey('generateByRegions')) {
+    ref.read(generateByRegions.notifier).state =
+        map['generateByRegions'] == 'true';
+  }
+  if (map.containsKey('excludePlayedNumbers')) {
+    ref.read(excludePlayedNumbers.notifier).state =
+        map['excludePlayedNumbers'] == 'true';
+  }
+}
+
+

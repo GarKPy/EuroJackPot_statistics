@@ -48,11 +48,14 @@ class StatisticScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     //print('----- Statistic Build');
 
-    List<WideNumbers> dataList = ref.read(dataToDisplayProvider);
+    List<WideNumbers> dataList = ref.watch(dataToDisplayProvider);
+    List<double> genRegionsKoef = ref.watch(generalRegions);
+    List<double> addRegionsKoef = ref.watch(additionalRegions);
     List<int> genNum = dataList[0].generalNumQuantity ?? [0];
     List<int> addNum = dataList[0].additionalNumQuantity ?? [0];
-    List<double> regionsGen = dataList[0].simpleRegionsGeneral();
-    List<double> regionsAdd = dataList[0].simpleRegionsAdditional();
+    List<double> regionsGen = dataList[0].simpleRegionsGeneral(genRegionsKoef);
+    List<double> regionsAdd =
+        dataList[0].simpleRegionsAdditional(addRegionsKoef);
 
     List<List<int>> genByRegion = filterByRegions(genNum, regionsGen);
     List<List<int>> addByRegion = filterByRegions(addNum, regionsAdd);

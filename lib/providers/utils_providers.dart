@@ -36,6 +36,7 @@ reload(WidgetRef ref) {
   ref.read(playedNumbersProvider.notifier).loadNumbers();
   ref.read(historyNumProvider.notifier).loadNumbers(rowsNum: 5);
   ref.read(wideDataProvider.notifier).loadNumbers();
+  ref.read(userPlayedNumbersProvider.notifier).loadNumbers();
 }
 
 final isLandscapeProvider =
@@ -64,7 +65,11 @@ final reloadMyNumbers = StateProvider((ref) => 0);
 
 final allowRepeatNumbers = StateProvider<bool>((ref) => false);
 final generateByRegions = StateProvider<bool>((ref) => true);
-final regions = StateProvider<List<double>>((ref) => [0.75, 0.5, 0.25]);
+final excludePlayedNumbers = StateProvider<bool>((ref) => true);
+final generalRegions =
+    StateProvider<List<double>>((ref) => [0.75, 0.5, 0.25]);
+final additionalRegions =
+    StateProvider<List<double>>((ref) => [0.75, 0.5, 0.25]);
 final generalRegionQuantity = StateProvider<List<int>>((ref) => [2, 1, 1, 1]);
 final additionalRegionQuantity =
     StateProvider<List<int>>((ref) => [0, 0, 1, 1]);

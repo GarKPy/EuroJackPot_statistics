@@ -20,18 +20,20 @@ class WideNumbers {
 
   double midAdditiona() =>
       (maxAdditional() - minAdditional()) * 0.5 + minAdditional();
-  List<double> simpleRegionsAdditional() => [
-        (maxAdditional() - minAdditional()) * 0.75 + minAdditional(),
-        (maxAdditional() - minAdditional()) * 0.5 + minAdditional(),
-        (maxAdditional() - minAdditional()) * 0.25 + minAdditional()
-      ];
+  List<double> simpleRegionsAdditional([List<double>? regionsKoef]) {
+    final koefs = regionsKoef ?? [0.75, 0.5, 0.25];
+    final span = maxAdditional() - minAdditional();
+    final minVal = minAdditional();
+    return [for (var k in koefs) span * k + minVal];
+  }
 
   double midGeneral() => (maxGeneral() - minGeneral()) * 0.5 + minGeneral();
-  List<double> simpleRegionsGeneral() => [
-        (maxGeneral() - minGeneral()) * 0.75 + minGeneral(),
-        (maxGeneral() - minGeneral()) * 0.5 + minGeneral(),
-        (maxGeneral() - minGeneral()) * 0.25 + minGeneral()
-      ];
+  List<double> simpleRegionsGeneral([List<double>? regionsKoef]) {
+    final koefs = regionsKoef ?? [0.75, 0.5, 0.25];
+    final span = maxGeneral() - minGeneral();
+    final minVal = minGeneral();
+    return [for (var k in koefs) span * k + minVal];
+  }
 
   List<int> get _additionalNumbersScaled {
     int minAdditional = additionalNumQuantity!.reduce(min);
@@ -78,7 +80,6 @@ class WideNumbers {
     this.generalNumQuantity = generalNumbers;
     this.additionalNumQuantity = additionalNumbers;
   }
-
 
   WideNumbers.empty(
       {this.datePlayed = '',

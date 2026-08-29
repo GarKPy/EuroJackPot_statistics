@@ -51,6 +51,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     super.initState();
+    dataUpdater(context, ref);
     reload(ref);
 
     //ref.read(myRandomNumbersProvider.notifier).generateRandomNumbersByRegions();
@@ -311,10 +312,11 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
 
       // appBar is working but dissabled
-      appBar: AppUtils.isLandscape(context) ? null : appBar(refreshData),
-      drawer: MainDrawer(
-        onSelectScreen: _setScreen,
-      ),
+      appBar:
+          AppUtils.isLandscape(context) ? null : appBar(refreshData, context),
+      // drawer: MainDrawer(
+      //   onSelectScreen: _setScreen,
+      // ),
       backgroundColor: AppColors.contentColorCyan,
       body: body(),
       // Stack(
@@ -338,7 +340,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 }
 
-appBar(refreshData) {
+appBar(refreshData, context) {
   return AppBar(
     toolbarHeight: AppDimens.appBarHeight,
     title: Row(
@@ -349,7 +351,11 @@ appBar(refreshData) {
             width: 30,
             child:
                 const Image(image: AssetImage('assets/images/gpot_icon.png'))),
-        //const Text('EuroGpot'),
+        Text(
+          'EuroJackPot by GarK',
+          style:
+              TextStyle(fontSize: MediaQuery.textScalerOf(context).scale(10)),
+        ),
         IconButton(
             onPressed: refreshData,
             icon: const Icon(Icons.change_circle_outlined))
