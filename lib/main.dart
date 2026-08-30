@@ -11,7 +11,6 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //debugPaintSizeEnabled = true;
     return const MaterialApp(
       home: HomePage(),
     );

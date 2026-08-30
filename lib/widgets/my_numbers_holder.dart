@@ -72,13 +72,7 @@ class _MyNumbersHolderState extends ConsumerState<MyNumbersHolder> {
       height: numHolderHeight,
       width: numHolderWidth,
       margin: const EdgeInsets.all(AppDimens.generalPadding),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6.0),
-          gradient: const LinearGradient(
-            colors: [Colors.blueAccent, Colors.indigo],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )),
+      decoration: AppUtils.generalBoxDecoration(),
       child: myNumWidget(isLandscape, numHolderHeight, numHolderWidth, myNums),
     );
   }

@@ -3,7 +3,6 @@ import 'package:eurojackpot/providers/utils_providers.dart';
 import 'package:eurojackpot/utils/app_utils.dart';
 import 'package:eurojackpot/widgets/number_w.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:eurojackpot/resources/app_dimens.dart';
 
@@ -61,7 +60,7 @@ class StatisticScreen extends ConsumerWidget {
     List<List<int>> addByRegion = filterByRegions(addNum, regionsAdd);
 
     List<String> regionsNames = ['Max', 'Mid 1', 'Mid2', 'Min'];
-
+    final onSurfaceColor = Theme.of(context).colorScheme.onSurface;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppDimens.generalPadding),
       child: Column(
@@ -72,8 +71,16 @@ class StatisticScreen extends ConsumerWidget {
               height: AppDimens.generalPadding,
               width: AppDimens.generalPadding,
             ),
-            Text(regionsNames[i]),
+            Text(
+              regionsNames[i],
+              style: TextStyle(
+                color: onSurfaceColor,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             Container(
+              padding: const EdgeInsets.all(AppDimens.generalPadding),
               decoration: AppUtils.generalBoxDecoration(),
               child: Wrap(
                 children: [
@@ -89,8 +96,16 @@ class StatisticScreen extends ConsumerWidget {
               height: AppDimens.generalPadding,
               width: AppDimens.generalPadding,
             ),
-            Text(regionsNames[i]),
+            Text(
+              regionsNames[i],
+              style: TextStyle(
+                color: onSurfaceColor,
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             Container(
+              padding: const EdgeInsets.all(AppDimens.generalPadding),
               decoration: AppUtils.generalBoxDecoration(),
               child: Wrap(
                 children: [

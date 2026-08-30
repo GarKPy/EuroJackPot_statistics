@@ -40,27 +40,18 @@ class _ChartState extends ConsumerState<Chart> {
 
       double screenWidth = MediaQuery.of(context).size.width;
       double screenHeight = MediaQuery.of(context).size.height;
-      double safeHeight = AppBar().preferredSize.height;
 
       List<int> numbersOriginal = [];
       double min, max;
       List<double> extraLines = [];
-      double fontSize, chartWidth, charHeight, yOffset;
+      double fontSize, chartWidth, yOffset;
 
       bool isLandscape = screenHeight > screenWidth ? false : true;
 
       double barWidth = 25;
       double mainPadding = 5;
       double barPadding = 5;
-      double aspectRatio = isLandscape
-          ? screenWidth / (screenHeight - 90)
-          : screenWidth / (screenHeight - 80);
-      //double aspectRatio = isLandscape ? 4 : 1;
-      //print("isLandscape? $isLandscape");
-      charHeight = isLandscape
-          ? screenHeight - safeHeight - 40
-          : screenHeight * aspectRatio;
-//charHeight = AppUtils.screenHight - AppDimens.myNumbersWidth - 240;
+
       int koefBar;
 
 // Setting variables for different charts
@@ -345,13 +336,4 @@ List<BarChartGroupData> chartGroups(List<int> points, BorderRadius barRadius,
 
 FlBorderData get borderData => FlBorderData(
       show: false,
-    );
-
-LinearGradient get _barsGradient => LinearGradient(
-      colors: [
-        AppColors.contentColorBlue.darken(10),
-        AppColors.contentColorCyan,
-      ],
-      begin: Alignment.bottomCenter,
-      end: Alignment.topCenter,
     );

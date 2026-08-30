@@ -1,5 +1,5 @@
-import 'package:eurojackpot/resources/app_colors.dart';
 import 'package:eurojackpot/resources/app_dimens.dart';
+import 'package:eurojackpot/utils/app_utils.dart' show AppUtils;
 import 'package:eurojackpot/widgets/played_number_editor_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -18,30 +18,7 @@ class PlayedNumbersRowWidget extends StatelessWidget {
   final VoidCallback? onDeleteRow;
 
   Widget _buildBall({required int num, required bool isStar}) {
-    Decoration decoration;
-    if (!isStar) {
-      decoration = const BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          center: Alignment(0.3, -0.2),
-          colors: [
-            Color.fromARGB(255, 255, 243, 210),
-            AppColors.contentColorAmber,
-          ],
-        ),
-      );
-    } else {
-      decoration = const ShapeDecoration(
-        shape: StarBorder(points: 8, innerRadiusRatio: .6),
-        gradient: RadialGradient(
-          center: Alignment(0.3, -0.2),
-          colors: [
-            Color.fromARGB(255, 255, 243, 210),
-            AppColors.contentColorAmber,
-          ],
-        ),
-      );
-    }
+    Decoration decoration = AppUtils.starDecoration(isStar);
 
     return Container(
       width: 34,
@@ -83,14 +60,7 @@ class PlayedNumbersRowWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        gradient: const LinearGradient(
-          colors: [Colors.blueAccent, Colors.indigo],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
+      decoration: AppUtils.generalBoxDecoration(),
       child: Row(
         children: [
           // Row label

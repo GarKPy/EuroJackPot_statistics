@@ -110,7 +110,7 @@ class AppUtils {
 
   static Decoration generalBoxDecoration() {
     return BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
+        borderRadius: BorderRadius.circular(8.0),
         gradient: const LinearGradient(
           colors: [Colors.blueAccent, Colors.indigo],
           begin: Alignment.topLeft,

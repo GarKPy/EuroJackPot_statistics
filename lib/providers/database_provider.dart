@@ -95,10 +95,6 @@ Future<Database> _getDatabase() async {
     // Save copied asset to documents
     await File(DBpath).writeAsBytes(bytes);
     //print('database copied');
-    Directory appDocDir = await syspaths.getApplicationDocumentsDirectory();
-    //print(appDocDir);
-    //String databasePath = path.join(appDocDir.path, 'euro_jackpot.db');
-    //var initialized = true;
   }
   //print('database exist');
   var db = await sql.openDatabase(DBpath);
@@ -226,17 +222,17 @@ Future updateDB(WidgetRef ref, tableData) async {
   return latestDateInDB;
 }
 
-Future readDB(String tableName, int rowsNum) async {
-  final db = await _getDatabase();
+// Future readDB(String tableName, int rowsNum) async {
+//   final db = await _getDatabase();
 
-  final dataDB = await db.rawQuery(
-      'SELECT * FROM ${tableName} ORDER BY date DESC LIMIT ${rowsNum}');
+//   final dataDB = await db.rawQuery(
+//       'SELECT * FROM ${tableName} ORDER BY date DESC LIMIT ${rowsNum}');
 
-  //print('----- readDB');
-  // for (var i = 0; i < dataDB.length; i++) {
-  //   print('${dataDB[i].values}');
-  // }
-}
+//   //print('----- readDB');
+//   // for (var i = 0; i < dataDB.length; i++) {
+//   //   print('${dataDB[i].values}');
+//   // }
+// }
 
 Future checkIfExistInDB(List<int> myNums) async {
   final db = await _getDatabase();
@@ -246,25 +242,25 @@ Future checkIfExistInDB(List<int> myNums) async {
   return dataDB.length;
 }
 
-Future removeRowDB(WidgetRef ref) async {
-  final db = await _getDatabase();
+// Future removeRowDB(WidgetRef ref) async {
+//   final db = await _getDatabase();
 
-  var dataDB;
-  dataDB = await db.rawQuery(
-      'DELETE FROM history WHERE ROWID = (SELECT MAX(ROWID) FROM history)');
-  dataDB = await db.rawQuery(
-      'DELETE FROM sum_history WHERE ROWID = (SELECT MAX(ROWID) FROM sum_history)');
-  dataDB = await db.rawQuery(
-      'DELETE FROM wide_history WHERE ROWID = (SELECT MAX(ROWID) FROM wide_history)');
+//   var dataDB;
+//   dataDB = await db.rawQuery(
+//       'DELETE FROM history WHERE ROWID = (SELECT MAX(ROWID) FROM history)');
+//   dataDB = await db.rawQuery(
+//       'DELETE FROM sum_history WHERE ROWID = (SELECT MAX(ROWID) FROM sum_history)');
+//   dataDB = await db.rawQuery(
+//       'DELETE FROM wide_history WHERE ROWID = (SELECT MAX(ROWID) FROM wide_history)');
 
-  //reading DB and updating latest date
-  final recentNumbers =
-      await db.rawQuery('SELECT * FROM history ORDER BY date DESC LIMIT 1');
-  ref.read(latestDateProvider.notifier).state =
-      recentNumbers[0]['date'].toString();
+//   //reading DB and updating latest date
+//   final recentNumbers =
+//       await db.rawQuery('SELECT * FROM history ORDER BY date DESC LIMIT 1');
+//   ref.read(latestDateProvider.notifier).state =
+//       recentNumbers[0]['date'].toString();
 
-  //print('removed');
-}
+//   //print('removed');
+// }
 
 final playedNumbersProvider =
     StateNotifierProvider<PlayedNumbersNotifier, List<WideNumbers>>(
@@ -315,8 +311,8 @@ class UserPlayedNumbersNotifier extends StateNotifier<List<List<int>>> {
       )
     ''');
 
-    final dataDB = await db.rawQuery(
-        'SELECT * FROM user_played_numbers ORDER BY row_index ASC');
+    final dataDB = await db
+        .rawQuery('SELECT * FROM user_played_numbers ORDER BY row_index ASC');
     if (dataDB.isEmpty) {
       List<List<int>> defaultRows = [
         [0, 0, 0, 0, 0, 0, 0],
@@ -390,7 +386,10 @@ class UserPlayedNumbersNotifier extends StateNotifier<List<List<int>>> {
 
   void addRow() {
     if (state.length < 5) {
-      state = [...state, [0, 0, 0, 0, 0, 0, 0]];
+      state = [
+        ...state,
+        [0, 0, 0, 0, 0, 0, 0]
+      ];
     }
   }
 
@@ -506,5 +505,3 @@ Future<void> loadAllSettings(dynamic ref) async {
         map['excludePlayedNumbers'] == 'true';
   }
 }
-
-

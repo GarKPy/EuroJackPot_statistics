@@ -12,7 +12,7 @@ class AppDimens {
 
   static const double carouselDotsDim = 5.0;
 
-  static const double statisticNumWidth = 30;
+  static const double statisticNumWidth = 34;
   static const double statisticFontWidth = 15;
 
   static const double bottomBarHeight = 40;

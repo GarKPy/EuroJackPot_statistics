@@ -7,6 +7,8 @@ import 'package:eurojackpot/resources/app_dimens.dart';
 import 'package:eurojackpot/widgets/played_numbers_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:eurojackpot/resources/app_resources.dart';
+import 'package:eurojackpot/utils/app_utils.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -111,7 +113,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
               InkWell(
                 onTap: onMinus,
                 child: const Icon(Icons.remove,
-                    size: 16, color: Colors.cyanAccent),
+                    size: 16, color: AppColors.contentColorCyan),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -126,8 +128,8 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
               ),
               InkWell(
                 onTap: onPlus,
-                child:
-                    const Icon(Icons.add, size: 16, color: Colors.cyanAccent),
+                child: const Icon(Icons.add,
+                    size: 16, color: AppColors.contentColorCyan),
               ),
             ],
           ),
@@ -160,7 +162,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
               color: Colors.white70,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 5),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -169,8 +171,8 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                 borderRadius: BorderRadius.circular(4),
                 child: const Padding(
                   padding: EdgeInsets.all(2),
-                  child:
-                      Icon(Icons.remove, size: 16, color: Colors.amberAccent),
+                  child: Icon(Icons.remove,
+                      size: 16, color: AppColors.contentColorCyan),
                 ),
               ),
               Padding(
@@ -189,7 +191,8 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                 borderRadius: BorderRadius.circular(4),
                 child: const Padding(
                   padding: EdgeInsets.all(2),
-                  child: Icon(Icons.add, size: 16, color: Colors.amberAccent),
+                  child: Icon(Icons.add,
+                      size: 16, color: AppColors.contentColorCyan),
                 ),
               ),
             ],
@@ -333,12 +336,8 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
           if (generateByReg) ...[
             const SizedBox(height: 8),
             Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.black26,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white12),
-              ),
+              padding: const EdgeInsets.all(5),
+              decoration: AppUtils.generalBoxDecoration(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -391,7 +390,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                         "General Numbers per Region",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -436,11 +435,14 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                         ),
                     ],
                   ),
-                  const Divider(color: Colors.white24, height: 24),
+                  const Divider(
+                      color: AppColors.contentColorBlue,
+                      height: 24,
+                      thickness: 2),
 
                   // Euro Star Region Cutoffs
                   Text(
-                    "Euro Star Region Cutoffs (Thresholds)",
+                    "Star Region Cutoffs (Thresholds)",
                     style: TextStyle(
                       color: onSurfaceColor,
                       fontSize: 15,
@@ -477,17 +479,17 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 2),
 
                   // Additional Region Quantities (must equal 2)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Euro Star Numbers per Region",
+                        "Star Numbers per Region",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -570,7 +572,7 @@ class _SettingsScreen extends ConsumerState<SettingsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "My Played Numbers (${playedRows.length} rows)",
+                  "My Played Numbers",
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: onSurfaceColor,
                         fontSize: 20,

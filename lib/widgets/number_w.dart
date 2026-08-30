@@ -13,6 +13,7 @@ class NumberWidget extends StatelessWidget {
     return Container(
       height: AppDimens.statisticNumWidth,
       width: AppDimens.statisticNumWidth,
+      margin: const EdgeInsets.all(AppDimens.generalPadding),
       decoration: AppUtils.starDecoration(isStar),
       child: Center(
         child: Text(
