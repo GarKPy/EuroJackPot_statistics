@@ -1,5 +1,6 @@
 import 'package:eurojackpot/models/history_numbers.dart';
 import 'package:eurojackpot/models/wide_numbers.dart';
+import 'package:eurojackpot/providers/database_provider.dart';
 import 'package:eurojackpot/providers/my_random_numbers_provider.dart';
 import 'package:eurojackpot/providers/utils_providers.dart';
 import 'package:eurojackpot/resources/app_dimens.dart';
@@ -26,6 +27,7 @@ class _ChartState extends ConsumerState<Chart> {
     List<WideNumbers> dataList = ref.watch(dataToDisplayProvider);
     List<HistoryNumbers> histNums = ref.watch(historyNumbersProvider);
     List<int> myNumbers = ref.watch(myNumsProvider);
+    List<List<int>> playedRows = ref.watch(userPlayedNumbersProvider);
 
     List<List<int>> historyGeneral = [];
     List<List<int>> historyAdditional = [];
@@ -54,7 +56,7 @@ class _ChartState extends ConsumerState<Chart> {
 
       int koefBar;
 
-// Setting variables for different charts
+      // Setting variables for different charts
       if (isGeneralNum) {
         List<double> generalRegionsKoef = ref.watch(generalRegions);
         numbersOriginal = dataList[0].generalNumQuantity!;
@@ -118,8 +120,15 @@ class _ChartState extends ConsumerState<Chart> {
                           context, ref, fontSize, myNumbers, isGeneralNum),
                       titlesData: titlesData(isGeneralNum, myNumbers),
                       borderData: borderData,
-                      barGroups: chartGroups(numbersOriginal, barRadius, min,
-                          barWidth, historyNums, koefBar),
+                      barGroups: chartGroups(
+                          numbersOriginal,
+                          barRadius,
+                          min,
+                          barWidth,
+                          historyNums,
+                          koefBar,
+                          playedRows,
+                          isGeneralNum),
                       gridData: const FlGridData(show: false),
                       alignment: BarChartAlignment.spaceEvenly,
                       maxY: max + yOffset,
@@ -273,18 +282,33 @@ FlTitlesData titlesData(bool isGeneral, List<int> myNums) {
   );
 }
 
-List<BarChartGroupData> chartGroups(List<int> points, BorderRadius barRadius,
-    double minY, double barWidth, List<List<int>> historyNums, int koefBar) {
+List<BarChartGroupData> chartGroups(
+    List<int> points,
+    BorderRadius barRadius,
+    double minY,
+    double barWidth,
+    List<List<int>> historyNums,
+    int koefBar,
+    List<List<int>> playedRows,
+    bool isGeneral) {
   double newMinY = minY - 7 * koefBar;
   //print('***** ChartGroup Chart screen');
 
   return points.mapIndexed((index, value) {
+    int barNumber = index + 1;
+    bool isPlayed = isGeneral
+        ? playedRows.any((row) => row.take(5).contains(barNumber))
+        : playedRows.any((row) => row.skip(5).take(2).contains(barNumber));
+
     return BarChartGroupData(
-      x: index + 1,
+      x: barNumber,
       barRods: [
         BarChartRodData(
           fromY: newMinY - koefBar,
           toY: value.toDouble(),
+          borderSide: isPlayed
+              ? const BorderSide(color: AppColors.contentColorAmber, width: 2.0)
+              : BorderSide.none,
           rodStackItems: [
             BarChartRodStackItem(
                 newMinY + 1 * koefBar,
